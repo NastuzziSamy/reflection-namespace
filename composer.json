@@ -1,0 +1,17 @@
+{
+    "name": "nastuzzi-samy/reflection-namespace",
+    "type": "library",
+    "description": "Reflect a namespace, give its classes, its sub-namespaces and more",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "NastuzziSamy",
+            "email": "samy@nastuzzi.fr"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    }
+}
