@@ -1,0 +1,27 @@
+{
+    "name": "fake/reflection-namespace",
+    "type": "tests",
+    "authors": [
+        {
+            "name": "NastuzziSamy",
+            "email": "samy@nastuzzi.fr"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "FakePackage\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "subpackage",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
+    "require": {
+        "subfake/reflection-namespace": "@dev"
+    }
+}

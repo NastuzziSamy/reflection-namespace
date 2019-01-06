@@ -16,13 +16,11 @@
 
 class ReflectionNamespace implements \Reflector
 {
-    const R_BACKSLASH = DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR;
     // Regex back slash
+    const R_BACKSLASH = '\\\\';
+
     const R_NO_BACKSLASH = '((?!'.self::R_BACKSLASH.').)+';
     const R_SUB_NAMESPACE = '^(.*)'.self::R_BACKSLASH.self::R_NO_BACKSLASH.'$';
-    const R_COMPOSER_FILE = '^ComposerAutoloaderInit[0-9a-f]{32}';
-
-    protected static $loaderClasses;
 
     protected $name;
     protected $parent;
@@ -51,27 +49,24 @@ class ReflectionNamespace implements \Reflector
         $this->subNamespaces = array_fill_keys(preg_grep($this->getOwnedRegex(), $namespaces, PREG_GREP_INVERT), null);
     }
 
+    public static function getLoaders()
+    {
+        return array_values(array_map(function ($autoloadFunction) {
+            return $autoloadFunction[0];
+        }, array_filter(spl_autoload_functions(), function ($autoloadFunction) {
+            return is_array($autoloadFunction);
+        })));
+    }
+
     public static function getLoaderClasses()
     {
-        if (static::$loaderClasses) {
-            return static::$loaderClasses;
+        $loaderClasses = [];
+
+        foreach (static::getLoaders() as $loader) {
+            $loaderClasses = array_merge($loaderClasses, array_keys($loader->getClassMap()));
         }
 
-        // Here, getting all composer autoloader is optimized.
-        //
-        // Passing by the classic ClassLoader will force us to prepare
-        // it and reload every class/file relation. Also, loading a
-        // particular loader file (like class_map file) could not be
-        // enough.
-        $matches = preg_grep('#'.self::R_COMPOSER_FILE.'#', get_declared_classes());
-
-        static::$loaderClasses = [];
-
-        foreach ($matches as $autoloader) {
-            static::$loaderClasses = array_merge(static::$loaderClasses, array_keys($autoloader::getLoader()->getClassMap()));
-        }
-
-        return static::$loaderClasses;
+        return $loaderClasses;
     }
 
     public function getName()
@@ -90,7 +85,7 @@ class ReflectionNamespace implements \Reflector
     {
         preg_match($this->getParentNameRegex(), $this->getName(), $matches);
 
-        return $matches[1];
+        return $matches[1] ?? '';
     }
 
     public function getParent()
@@ -214,9 +209,16 @@ class ReflectionNamespace implements \Reflector
         return array_intersect($this->getSubClassNames(), get_declared_classes());
     }
 
-    public function getNamespaces()
-    {
-        return array_merge($this->getOwnedNamespaces(), $this->getSubNamespaces());
+    public function getOwnedNamespaceNames() {
+        return array_keys($this->ownedNamespaces);
+    }
+
+    public function getSubNamespaceNames() {
+        return array_keys($this->subNamespaces);
+    }
+
+    public function getNamespaceNames() {
+        return ($this->getOwnedNamespaceNames() + $this->getSubNamespaceNames());
     }
 
     public function getOwnedNamespaces()
@@ -239,6 +241,11 @@ class ReflectionNamespace implements \Reflector
         }
 
         return $this->subNamespaces;
+    }
+
+    public function getNamespaces()
+    {
+        return array_merge($this->getOwnedNamespaces(), $this->getSubNamespaces());
     }
 
     public static function export()

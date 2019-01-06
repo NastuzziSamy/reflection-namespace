@@ -1,0 +1,45 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "28223cda2c6062d1a31e05e504d17f20",
+    "packages": [
+        {
+            "name": "subfake/reflection-namespace",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "subpackage",
+                "reference": "78c338c567ead334796e01ff84e70a6ba2d99089",
+                "shasum": null
+            },
+            "type": "tests",
+            "autoload": {
+                "psr-4": {
+                    "FakePackage\\FakeSubPackage\\": "src/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "NastuzziSamy",
+                    "email": "samy@nastuzzi.fr"
+                }
+            ],
+            "transport-options": {
+                "symlink": true
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "subfake/reflection-namespace": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

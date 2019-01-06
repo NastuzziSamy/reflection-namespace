@@ -1,0 +1,15 @@
+{
+    "name": "subfake/reflection-namespace",
+    "type": "tests",
+    "authors": [
+        {
+            "name": "NastuzziSamy",
+            "email": "samy@nastuzzi.fr"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "FakePackage\\FakeSubPackage\\": "src/"
+        }
+    }
+}
