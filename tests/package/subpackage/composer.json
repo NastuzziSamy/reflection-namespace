@@ -11,5 +11,10 @@
         "psr-4": {
             "FakePackage\\FakeSubPackage\\": "src/"
         }
+    },
+    "scripts": {},
+    "require": {},
+    "require-dev": {
+        "symfony/thanks": "^1.1"
     }
 }

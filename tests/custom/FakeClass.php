@@ -4,5 +4,5 @@ namespace Custom;
 
 class FakeClass
 {
-    
+
 }

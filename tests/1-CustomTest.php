@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-final class ReflectionTest extends TestCase
+final class CustomTest extends TestCase
 {
     public function testCustom(): void
     {
@@ -12,21 +12,16 @@ final class ReflectionTest extends TestCase
         $this->assertEquals('Custom', $reflection->getName());
         $this->assertEquals('Custom', $reflection->getShortName());
         $this->assertEquals('', $reflection->getParentName());
+        $reflection->getClassNames();
 
         $this->assertEquals([
-                "Custom\\FakeClass"
+                "FakeClass"
             ],
             $reflection->getClassNames()
         );
 
         $this->assertEquals([
-                "Custom\\FakeClass"
-            ],
-            $reflection->getClassNames()
-        );
-
-        $this->assertEquals([
-                "Custom\\FakeNamespace"
+                "FakeNamespace"
             ],
             $reflection->getNamespaceNames()
         );
@@ -36,19 +31,13 @@ final class ReflectionTest extends TestCase
     {
         $reflection = new ReflectionNamespace('Custom\\FakeNamespace');
 
-        $this->assertEquals('Custom\FakeNamespace', $reflection->getName());
+        $this->assertEquals('Custom\\FakeNamespace', $reflection->getName());
         $this->assertEquals('FakeNamespace', $reflection->getShortName());
         $this->assertEquals('Custom', $reflection->getParentName());
         $this->assertEquals(new ReflectionNamespace('Custom'), $reflection->getParent());
 
         $this->assertEquals([
-                "Custom\\FakeNamespace\\FakeClass"
-            ],
-            $reflection->getClassNames()
-        );
-
-        $this->assertEquals([
-                "Custom\\FakeNamespace\\FakeClass"
+                "FakeClass"
             ],
             $reflection->getClassNames()
         );

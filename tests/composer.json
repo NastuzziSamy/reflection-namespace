@@ -8,11 +8,15 @@
         }
     ],
     "autoload": {
+        "psr-0": {
+            "FakeNamespace\\": "src/FakeNamespace"
+        },
         "psr-4": {
-            "\\": "../src/",
-            "FakeNamespace\\": "src/FakeNamespace",
             "FakePackage\\": "src/FakePackage"
-        }
+        },
+        "files": [
+            "src/FakeClass.php"
+        ]
     },
     "repositories": [
         {

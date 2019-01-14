@@ -10,13 +10,18 @@
         }
     ],
     "autoload": {
-        "psr-4": {
-            "": "src/"
-        }
+        "files": [
+            "src/ReflectionNamespace.php"
+        ]
     },
     "scripts": {
-        "test": [
+        "prepare-test": [
             "@composer install",
+            "@composer install --working-dir=tests",
+            "@composer install --working-dir=tests/package",
+            "@composer install --working-dir=tests/package/subpackage --no-dev || echo 'Preparation done'"
+        ],
+        "test": [
             "vendor/bin/phpunit --bootstrap tests/vendor/autoload.php tests"
         ]
     },

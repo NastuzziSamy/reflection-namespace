@@ -78,28 +78,15 @@ final class DefinitionTest extends TestCase
 
         new \Custom\FakeClass;
 
+        // Loaders are not reloaded without a user action
+        $this->assertEquals(
+            count($this->getCustomAndSupposedLoaders()),
+            count(ReflectionNamespace::getLoaders()) + 1
+        );
+
         $this->assertEquals(
             $this->getCustomAndSupposedLoaders(),
-            ReflectionNamespace::getLoaders()
-        );
-    }
-
-    /**
-     * This test allows to check that the ReflectionNamespace
-     * uses all Composer Loaders. As multiple dependencies
-     * may exist, multiple Composer Loaders need to be used.
-     */
-    public function testGetLoadersClasses(): void
-    {
-        $classes = [];
-
-        foreach ($this->getCustomAndSupposedLoaders() as $loader) {
-            $classes = array_merge($classes, array_keys($loader->getClassMap()));
-        }
-
-        $this->assertEquals(
-            $classes,
-            ReflectionNamespace::getLoaderClasses()
+            ReflectionNamespace::getLoaders(true)
         );
     }
 }
