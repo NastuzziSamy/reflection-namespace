@@ -28,44 +28,46 @@ final class FakePackageTest extends TestCase
             $reflection->getNamespaceNames()
         );
     }
-    //
-    // public function testFakeNamespaceFakeSubNamespace(): void
-    // {
-    //     $reflection = new ReflectionNamespace('FakeNamespace\\FakeSubNamespace');
-    //
-    //     $this->assertEquals('FakeNamespace\\FakeSubNamespace', $reflection->getName());
-    //     $this->assertEquals('FakeSubNamespace', $reflection->getShortName());
-    //     $this->assertEquals('FakeNamespace', $reflection->getParentName());
-    //     $this->assertEquals(new ReflectionNamespace('FakeNamespace'), $reflection->getParent());
-    //
-    //     $this->assertEquals([
-    //             'FakeClass'
-    //         ],
-    //         $reflection->getClassNames()
-    //     );
-    //
-    //     $this->assertEquals([],
-    //         $reflection->getNamespaceNames()
-    //     );
-    // }
-    //
-    // public function testFakeNamespaceFakeSubNamespace2(): void
-    // {
-    //     $reflection = new ReflectionNamespace('FakeNamespace\\FakeSubNamespace2');
-    //
-    //     $this->assertEquals('FakeNamespace\\FakeSubNamespace2', $reflection->getName());
-    //     $this->assertEquals('FakeSubNamespace2', $reflection->getShortName());
-    //     $this->assertEquals('FakeNamespace', $reflection->getParentName());
-    //     $this->assertEquals(new ReflectionNamespace('FakeNamespace'), $reflection->getParent());
-    //
-    //     $this->assertEquals([
-    //             'FakeClass'
-    //         ],
-    //         $reflection->getClassNames()
-    //     );
-    //
-    //     $this->assertEquals([],
-    //         $reflection->getNamespaceNames()
-    //     );
-    // }
+
+    public function testFakePackageFakeSubNamespace(): void
+    {
+        $reflection = new ReflectionNamespace('FakePackage\\FakeSubNamespace');
+
+        $this->assertEquals('FakePackage\\FakeSubNamespace', $reflection->getName());
+        $this->assertEquals('FakeSubNamespace', $reflection->getShortName());
+        $this->assertEquals('FakePackage', $reflection->getParentName());
+        $this->assertEquals(new ReflectionNamespace('FakePackage'), $reflection->getParent());
+
+        $this->assertEquals([
+                'FakeClass'
+            ],
+            $reflection->getClassNames()
+        );
+
+        $this->assertEquals([],
+            $reflection->getNamespaceNames()
+        );
+    }
+
+    public function testFakePackageFakeSubPackage(): void
+    {
+        $reflection = new ReflectionNamespace('FakePackage\\FakeSubPackage');
+
+        $this->assertEquals('FakePackage\\FakeSubPackage', $reflection->getName());
+        $this->assertEquals('FakeSubPackage', $reflection->getShortName());
+        $this->assertEquals('FakePackage', $reflection->getParentName());
+        $this->assertEquals(new ReflectionNamespace('FakePackage'), $reflection->getParent());
+
+        $this->assertEquals([
+                'FakeClass'
+            ],
+            $reflection->getClassNames()
+        );
+
+        $this->assertEquals([
+                'EmptyNamespace'
+            ],
+            $reflection->getNamespaceNames()
+        );
+    }
 }

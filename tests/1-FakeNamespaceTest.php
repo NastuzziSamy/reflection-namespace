@@ -14,6 +14,15 @@ final class FakeNamespaceTest extends TestCase
         $this->assertEquals('', $reflection->getParentName());
         $reflection->getClassNames();
 
+        // PSR0 is not activated here.
+        $this->assertEquals([],
+            $reflection->getClassNames()
+        );
+
+        ReflectionNamespace::loadPRS0(true);
+        $reflection->reload(); // Reload with PSR0
+
+        // All classes and namespaces of the FakeNamespace namespace are reload.
         $this->assertEquals([
                 'FakeClass'
             ],
@@ -30,6 +39,7 @@ final class FakeNamespaceTest extends TestCase
 
     public function testFakeNamespaceFakeSubNamespace(): void
     {
+        ReflectionNamespace::loadPRS0(true);
         $reflection = new ReflectionNamespace('FakeNamespace\\FakeSubNamespace');
 
         $this->assertEquals('FakeNamespace\\FakeSubNamespace', $reflection->getName());
@@ -50,6 +60,7 @@ final class FakeNamespaceTest extends TestCase
 
     public function testFakeNamespaceFakeSubNamespace2(): void
     {
+        ReflectionNamespace::loadPRS0(true);
         $reflection = new ReflectionNamespace('FakeNamespace\\FakeSubNamespace2');
 
         $this->assertEquals('FakeNamespace\\FakeSubNamespace2', $reflection->getName());
