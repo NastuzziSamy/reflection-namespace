@@ -21,6 +21,8 @@ class ReflectionNamespace implements \Reflector
     const R_NO_BACKSLASH = '((?:(?!'.self::R_BACKSLASH.').)+)';
     const R_WHATEVER_NAMESPACE = '('.self::R_BACKSLASH.self::R_NO_BACKSLASH.')*';
 
+    const GLOB_FLAGS = GLOB_NOSORT | GLOB_ERR | GLOB_NOESCAPE;
+
     // Check if loaders changed.
     protected static $loaders;
     // Specify if the class should load declared classes.
@@ -122,6 +124,14 @@ class ReflectionNamespace implements \Reflector
 
     public function fillWithLoader($loader) {
         $this->fillFromClassMap(array_keys($loader->getClassMap()));
+
+        if (!$loader->isClassMapAuthoritative()) {
+            $this->fillFromPsr4($loader->getPrefixesPsr4());
+
+            if (static::isLoadingPSR0()) {
+                $this->fillFromPsr4($loader->getPrefixes());
+            }
+        }
     }
 
     protected function fillFromClassMap(array $classes) {
@@ -160,13 +170,104 @@ class ReflectionNamespace implements \Reflector
         );
     }
 
+    protected function fillFromPsr4(array $namespaces)
     {
+        $validNamespaces = preg_grep($this->getSharedNamespaceRegex(), array_keys($namespaces));
+        $shorterNamespaces = preg_grep($this->getSharedNamespaceRegex(true), $validNamespaces);
+        $name = $this->getName();
+        $parts = explode('\\', trim($name));
+
+        foreach ($shorterNamespaces as $namespace) {
+            $paths = $namespaces[$namespace];
+
+            foreach ($paths as $path) {
+                $missingParts = array_diff($parts, explode('\\', trim($namespace)));
+
+                if (count($missingParts)) {
+                    $goodPaths = $this->getDirectoriesFromPath($path, $missingParts);
+
+                    foreach ($goodPaths as $goodPath) {
+                        $this->fillClasses($this->getClassesFromPath($goodPath, $name));
+                        $this->fillNamespaces($this->getNamespacesFromPath($goodPath, $name));
+                    }
+                } else {
+                    $this->fillClasses($this->getClassesFromPath($path, $name));
+                    $this->fillNamespaces($this->getNamespacesFromPath($path, $name));
+                }
+            }
+        }
+
+        $this->fillNamespaces(array_diff($validNamespaces, $shorterNamespaces));
     }
 
+    protected function getDirectoriesFromPath(string $path, array $missingParts = []) {
+        $dirPaths = glob($path.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR, static::GLOB_FLAGS);
+
+        if (!$dirPaths) {
+            return [];
+        }
+
+        if (count($missingParts)) {
+            $validDirs = [];
+            $part = array_slice($missingParts, -1);
+
+            foreach ($dirPaths as $dirPath) {
+                if ($this->getNameFromFile($this->getDirFromPath($dirPath)) === $part) {
+                    $validDirs = array_merge(
+                        $this->getDirectoriesFromPath($dirPath, $missingParts),
+                        $validDirs
+                    );
+                }
+            }
+        }
+
+        return $dirPaths;
     }
 
+    protected function getNamespacesFromPath(string $path, string $prefix = '') {
+        $dirPaths = glob($path.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR, static::GLOB_FLAGS);
+
+        if (!$dirPaths) {
+            return [];
+        }
+
+        return array_map(function ($dirPath) use ($prefix) {
+            return $prefix.'\\'.$this->getNameFromFile($this->getDirFromPath($dirPath)).'\\';
+        }, $dirPaths);
     }
 
+    protected function getDirFromPath(string $dirPath) {
+        $dirs = explode(DIRECTORY_SEPARATOR, $dirPath);
+
+        return $dirs[count($dirs) - 2];
+    }
+
+    protected function getClassesFromPath(string $path, string $prefix = '') {
+        $files = glob($path.DIRECTORY_SEPARATOR.'*.php', static::GLOB_FLAGS);
+
+        if (!$files) {
+            return [];
+        }
+
+        return array_map(function ($filePath) use ($prefix) {
+            return $prefix.'\\'.$this->getNameFromFile($this->getFileFromPath($filePath));
+        }, $files);
+    }
+
+    protected function getFileFromPath(string $filePath) {
+        $dirs = explode(DIRECTORY_SEPARATOR, $filePath);
+
+        return end($dirs);
+    }
+
+    protected function getNameFromFile(string $file) {
+        $class = explode('.', $file)[0];
+
+        $class = str_replace('-', ' ', str_replace('_', ' ', $class));
+        $class = ucwords($class);
+        $class = str_replace(' ', '', $class);
+
+        return $class;
     }
 
     protected function prepare()
@@ -186,7 +287,17 @@ class ReflectionNamespace implements \Reflector
             if (static::isLoadingDeclaredClasses()) {
                 $this->fillWithDeclaredClasses();
             }
+
+            $this->prepared = true;
         }
+    }
+
+    public function reload()
+    {
+        $this->prepared = false;
+        static::$loaders = null;
+
+        $this->prepare();
     }
 
     public function getName()
@@ -225,11 +336,30 @@ class ReflectionNamespace implements \Reflector
 
     protected function getNamespaceRegex()
     {
-        return '#^'.$this->getNameForRegex().static::R_BACKSLASH.static::R_NO_BACKSLASH.static::R_BACKSLASH.static::R_NO_BACKSLASH.'$#';
+        return '#^'.$this->getNameForRegex().static::R_BACKSLASH.static::R_NO_BACKSLASH.static::R_BACKSLASH.static::R_NO_BACKSLASH.'?$#';
     }
 
+    protected function getSharedNamespaceRegex(bool $strict = false)
     {
-        return array_intersect($this->getOwnedClassNames(), get_declared_classes());
+        $names = explode('\\', $this->getName());
+        $begin = array_shift($names);
+        $end = static::R_BACKSLASH.'?';
+
+        if (count($names) === 0) {
+            $begin = '('.$begin;
+            $end = '|)'.$end;
+        } else {
+            foreach ($names as $name) {
+                $begin .= '('.static::R_BACKSLASH.$name;
+                $end = '|)'.$end;
+            }
+        }
+
+        if (!$strict) {
+            $begin .= '('.static::R_BACKSLASH.'.*|)*';
+        }
+
+        return '#^'.$begin.$end.'$#';
     }
 
     protected function getShortNameRegex()
