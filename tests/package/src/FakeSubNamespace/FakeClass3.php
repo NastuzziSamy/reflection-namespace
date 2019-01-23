@@ -2,6 +2,6 @@
 
 namespace FakePackage\FakeSubNamespace;
 
-class FakeClass {
+class FakeClass3 {
 
 }

@@ -2,6 +2,6 @@
 
 namespace FakeNamespace;
 
-class FakeClass {
+class FakeClass8 {
 
 }

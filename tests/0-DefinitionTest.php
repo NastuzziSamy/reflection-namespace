@@ -71,12 +71,12 @@ final class DefinitionTest extends TestCase
 
         self::$newLoader = new \Composer\Autoload\ClassLoader();
         self::$newLoader->addClassMap([
-            'Custom\\FakeClass' => __DIR__.'/custom/FakeClass.php',
-            'Custom\\FakeNamespace\\FakeClass' => __DIR__.'/custom/FakeNamespace/FakeClass.php'
+            'Custom\\FakeNamespace\\FakeClass1' => __DIR__.'/custom/FakeNamespace/FakeClass1.php',
+            'Custom\\FakeClass2' => __DIR__.'/custom/FakeClass2.php'
         ]);
         self::$newLoader->register();
 
-        new \Custom\FakeClass;
+        new \Custom\FakeClass2;
 
         // Loaders are not reloaded without a user action
         $this->assertEquals(
@@ -88,5 +88,7 @@ final class DefinitionTest extends TestCase
             $this->getCustomAndSupposedLoaders(),
             ReflectionNamespace::getLoaders(true)
         );
+
+        new \Custom\FakeNamespace\FakeClass1;
     }
 }

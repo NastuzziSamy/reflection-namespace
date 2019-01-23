@@ -2,6 +2,6 @@
 
 namespace Custom\FakeNamespace;
 
-class FakeClass {
+class FakeClass1 {
 
 }

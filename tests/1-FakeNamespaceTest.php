@@ -24,7 +24,7 @@ final class FakeNamespaceTest extends TestCase
 
         // All classes and namespaces of the FakeNamespace namespace are reload.
         $this->assertEquals([
-                'FakeClass'
+                'FakeClass8'
             ],
             $reflection->getClassNames()
         );
@@ -48,7 +48,7 @@ final class FakeNamespaceTest extends TestCase
         $this->assertEquals(new ReflectionNamespace('FakeNamespace'), $reflection->getParent());
 
         $this->assertEquals([
-                'FakeClass'
+                'FakeClass6'
             ],
             $reflection->getClassNames()
         );
@@ -69,7 +69,7 @@ final class FakeNamespaceTest extends TestCase
         $this->assertEquals(new ReflectionNamespace('FakeNamespace'), $reflection->getParent());
 
         $this->assertEquals([
-                'FakeClass'
+                'FakeClass7'
             ],
             $reflection->getClassNames()
         );

@@ -15,8 +15,8 @@ final class FakePackageTest extends TestCase
         $reflection->getClassNames();
 
         $this->assertEquals([
-                'FakeClass',
-                'FakeClass2'
+                'FakeClass9',
+                'FakeClass4'
             ],
             $reflection->getClassNames()
         );
@@ -39,7 +39,7 @@ final class FakePackageTest extends TestCase
         $this->assertEquals(new ReflectionNamespace('FakePackage'), $reflection->getParent());
 
         $this->assertEquals([
-                'FakeClass'
+                'FakeClass3'
             ],
             $reflection->getClassNames()
         );
@@ -59,7 +59,7 @@ final class FakePackageTest extends TestCase
         $this->assertEquals(new ReflectionNamespace('FakePackage'), $reflection->getParent());
 
         $this->assertEquals([
-                'FakeClass'
+                'FakeClass5'
             ],
             $reflection->getClassNames()
         );

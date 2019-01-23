@@ -15,7 +15,7 @@
             "FakePackage\\": "src/FakePackage"
         },
         "files": [
-            "src/FakeClass.php"
+            "src/FakeClass0.php"
         ]
     },
     "repositories": [

@@ -2,6 +2,6 @@
 
 namespace FakePackage;
 
-class FakeClass {
+class FakeClass9 {
 
 }

@@ -2,7 +2,7 @@
 
 namespace Custom;
 
-class FakeClass
+class FakeClass2
 {
 
 }
