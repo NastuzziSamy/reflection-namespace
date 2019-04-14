@@ -14,19 +14,19 @@ final class FakePackageTest extends TestCase
         $this->assertEquals('', $reflection->getParentName());
         $reflection->getClassNames();
 
-        $this->assertEquals([
+        $this->assertEquals(array_diff([
+                'FakeClass4',
                 'FakeClass9',
-                'FakeClass4'
             ],
             $reflection->getClassNames()
-        );
+        ), []);
 
-        $this->assertEquals([
+        $this->assertEquals(array_diff([
                 'FakeSubPackage',
-                'FakeSubNamespace'
+                'FakeSubNamespace',
             ],
             $reflection->getNamespaceNames()
-        );
+        ), []);
     }
 
     public function testFakePackageFakeSubNamespace(): void

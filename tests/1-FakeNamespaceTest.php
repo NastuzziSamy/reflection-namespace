@@ -29,12 +29,12 @@ final class FakeNamespaceTest extends TestCase
             $reflection->getClassNames()
         );
 
-        $this->assertEquals([
+        $this->assertEquals(array_diff([
                 'FakeSubNamespace',
-                'FakeSubNamespace2'
+                'FakeSubNamespace2',
             ],
             $reflection->getNamespaceNames()
-        );
+        ), []);
     }
 
     public function testFakeNamespaceFakeSubNamespace(): void
