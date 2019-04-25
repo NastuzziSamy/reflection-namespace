@@ -51,7 +51,9 @@ class ReflectionNamespace implements \Reflector
      */
     public function __construct(string $name)
     {
-        $this->name = $name;
+        $names = explode('\\', $name);
+
+        $this->name = implode('\\', $names).'\\';
     }
 
     /**
@@ -584,7 +586,7 @@ class ReflectionNamespace implements \Reflector
 
         foreach ($this->classes as $className => $classReflection) {
             if (is_null($classReflection)) {
-                $this->classes[$className] = new \ReflectionClass($className);
+                $this->classes[$className] = new \ReflectionClass($this->getName().$className);
             }
         }
 
@@ -600,7 +602,7 @@ class ReflectionNamespace implements \Reflector
     {
         $this->prepare();
 
-        return ($this->classes[$className] ?? ($this->classes[$className] = new \ReflectionClass($className)));
+        return ($this->classes[$className] ?? ($this->classes[$className] = new \ReflectionClass($this->getName().$className)));
     }
 
     public function getDeclaredClasses()
