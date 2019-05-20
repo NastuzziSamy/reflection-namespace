@@ -13,6 +13,7 @@
 
     <!-- Except some Zend rules -->
     <rule ref="Zend">
+        <exclude name="Generic.Arrays.DisallowLongArraySyntax" />
         <exclude name="Generic.WhiteSpace.DisallowTabIndent" />
         <exclude name="Zend.NamingConventions.ValidVariableName.PrivateNoUnderscore" />
         <exclude name="Zend.NamingConventions.ValidVariableName.NotCamelCaps" />

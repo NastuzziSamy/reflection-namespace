@@ -144,7 +144,7 @@ class ReflectionNamespace implements \Reflector
      * @param boolean $hasCustomLoaders Define if this instance uses our loaders or not.
      * @return self
      */
-    public function setLoaders(array $loaders=[], bool $hasCustomLoaders=true): self
+    public function setLoaders(array $loaders=array(), bool $hasCustomLoaders=true): self
     {
         $this->customLoaders = $loaders;
         $this->hasCustomLoaders = $hasCustomLoaders;
@@ -292,18 +292,18 @@ class ReflectionNamespace implements \Reflector
      * @param  array  $missingParts Namespace short name list.
      * @return array
      */
-    protected function getDirectoriesFromPath(string $path, array $missingParts=[]): array
+    protected function getDirectoriesFromPath(string $path, array $missingParts=array()): array
     {
         $dirPaths = glob($path.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR, static::GLOB_FLAGS);
 
         // Errors could be found, or just nothing, returns FALSE.
         if (!$dirPaths) {
-            return [];
+            return array();
         }
 
         // Continue to search if there are missing parts.
         if (count($missingParts)) {
-            $validDirs = [];
+            $validDirs = array();
             $part = array_shift($missingParts);
 
             foreach ($dirPaths as $dirPath) {
@@ -333,7 +333,7 @@ class ReflectionNamespace implements \Reflector
         $dirPaths = glob($path.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR, static::GLOB_FLAGS);
 
         if (!$dirPaths) {
-            return [];
+            return array();
         }
 
         return array_map(function ($dirPath) use ($prefix) {
@@ -366,7 +366,7 @@ class ReflectionNamespace implements \Reflector
         $files = glob($path.DIRECTORY_SEPARATOR.'*.php', static::GLOB_FLAGS);
 
         if (!$files) {
-            return [];
+            return array();
         }
 
         return array_map(function ($filePath) use ($prefix) {
@@ -417,8 +417,8 @@ class ReflectionNamespace implements \Reflector
         }
 
         if (!$this->prepared) {
-            $this->classes = [];
-            $this->namespaces = [];
+            $this->classes = array();
+            $this->namespaces = array();
 
             foreach ($this->getLocalLoaders() as $loader) {
                 if ($loader instanceof ClassLoader) {
