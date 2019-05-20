@@ -1,5 +1,12 @@
 <?php
 /**
+ * @author Samy Nastuzzi <samy@nastuzzi.fr>
+ *
+ * @copyright Copyright (c) 2019
+ * @license MIT
+ */
+
+/**
  * Reflect a namespace by its full name.
  *
  * Usefull for:
@@ -7,23 +14,13 @@
  * - Finding all classes,
  * - Searching by namespace and no more by directory,
  * - Finding all definitions in a namespace (whatever by you or your dependencies).
- *
- * @author Samy Nastuzzi <samy@nastuzzi.fr>
- *
- * @copyright Copyright (c) 2019
- * @license MIT
  */
-
-use Composer\Autoload\ClassLoader;
-
-class ReflectionNamespace implements \Reflector
+class ReflectionNamespace implements Reflector
 {
     // Regex back slash.
     const R_BACKSLASH = '\\\\';
-    const R_NO_BACKSLASH = '((?:(?!'.self::R_BACKSLASH.').)+)';
-    const R_WHATEVER_NAMESPACE = '('.self::R_BACKSLASH.self::R_NO_BACKSLASH.')*';
-
-    const GLOB_FLAGS = (GLOB_NOSORT | GLOB_ERR | GLOB_NOESCAPE);
+    const R_NO_BACKSLASH = '((?:(?!\\\\).)+)';
+    const R_WHATEVER_NAMESPACE = '(\\\\((?:(?!\\\\).)+))*';
 
     // Check if loaders changed.
     protected static $loaders;
@@ -60,13 +57,11 @@ class ReflectionNamespace implements \Reflector
      * Tell if the class should load declared classes.
      *
      * @param  boolean $load
-     * @return string
+     * @return void
      */
-    public static function loadDeclaredClasses(bool $load=NULL): string
+    public static function loadDeclaredClasses(bool $load=NULL)
     {
-        static::$loadDeclaredClasses = is_NULL($load) ? TRUE : $load;
-
-        return static::class;
+        static::$loadDeclaredClasses = is_null($load) ? TRUE : $load;
     }
 
     /**
@@ -74,7 +69,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return boolean
      */
-    public static function isLoadingDeclaredClasses(): bool
+    public static function isLoadingDeclaredClasses()
     {
         return static::$loadDeclaredClasses;
     }
@@ -83,13 +78,11 @@ class ReflectionNamespace implements \Reflector
      * Tell if the class should load from PSR0 declarations.
      *
      * @param  boolean $load
-     * @return string
+     * @return void
      */
-    public static function loadPRS0(bool $load=NULL): string
+    public static function loadPRS0(bool $load=NULL)
     {
-        static::$loadPSRO = is_NULL($load) ? TRUE : $load;
-
-        return static::class;
+        static::$loadPSRO = is_null($load) ? TRUE : $load;
     }
 
     /**
@@ -97,7 +90,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return boolean
      */
-    public static function isLoadingPSR0(): bool
+    public static function isLoadingPSR0()
     {
         return static::$loadPSRO;
     }
@@ -108,9 +101,9 @@ class ReflectionNamespace implements \Reflector
      * @param  boolean $reload Force reloading all available loaders.
      * @return array
      */
-    public static function getLoaders(bool $reload=NULL): array
+    public static function getLoaders(bool $reload=NULL)
     {
-        if (static::$loaders && (is_NULL($reload) || !$reload)) {
+        if (static::$loaders && (is_null($reload) || !$reload)) {
             return static::$loaders;
         }
 
@@ -128,7 +121,7 @@ class ReflectionNamespace implements \Reflector
      * @param  boolean $reload Force reloading all available loaders if this instance has no custom loaders.
      * @return array
      */
-    public function getLocalLoaders(bool $reload=NULL): array
+    public function getLocalLoaders(bool $reload=NULL)
     {
         if ($this->hasCustomLoaders) {
             return $this->customLoaders;
@@ -144,10 +137,10 @@ class ReflectionNamespace implements \Reflector
      * @param boolean $hasCustomLoaders Define if this instance uses our loaders or not.
      * @return self
      */
-    public function setLoaders(array $loaders=array(), bool $hasCustomLoaders=NULL): self
+    public function setLoaders(array $loaders=array(), bool $hasCustomLoaders=NULL)
     {
         $this->customLoaders = $loaders;
-        $this->hasCustomLoaders = is_NULL($hasCustomLoaders) ? TRUE : $hasCustomLoaders;
+        $this->hasCustomLoaders = is_null($hasCustomLoaders) ? TRUE : $hasCustomLoaders;
 
         return $this;
     }
@@ -155,10 +148,10 @@ class ReflectionNamespace implements \Reflector
     /**
      * Fill classes and namespaces for this instance with a specific Composer Loader.
      *
-     * @param  ClassLoader $loader
+     * @param  Composer\Autoload\ClassLoader $loader
      * @return void
      */
-    public function fillWithLoader(ClassLoader $loader): void
+    public function fillWithLoader(Composer\Autoload\ClassLoader $loader)
     {
         $this->fillFromClassMap(array_keys($loader->getClassMap()));
 
@@ -177,7 +170,7 @@ class ReflectionNamespace implements \Reflector
      * @param array $classes List of classes.
      * @return void
      */
-    protected function fillFromClassMap(array $classes): void
+    protected function fillFromClassMap(array $classes)
     {
         $this->fillClasses($classes);
         $this->fillNamespaces($classes);
@@ -190,7 +183,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return void
      */
-    public function fillWithDeclaredClasses(): void
+    public function fillWithDeclaredClasses()
     {
         $this->fillFromClassMap(get_declared_classes());
         $this->fillFromClassMap(get_declared_interfaces());
@@ -203,7 +196,7 @@ class ReflectionNamespace implements \Reflector
      * @param  array $classes
      * @return void
      */
-    protected function fillClasses(array $classes): void
+    protected function fillClasses(array $classes)
     {
         $this->classes = array_merge(
             array_fill_keys(array_map(function (string $class) {
@@ -221,7 +214,7 @@ class ReflectionNamespace implements \Reflector
      * @param  array $classes
      * @return void
      */
-    protected function fillNamespaces(array $classes): void
+    protected function fillNamespaces(array $classes)
     {
         $this->namespaces = array_merge(
             array_fill_keys(array_map(function (string $class) {
@@ -246,7 +239,7 @@ class ReflectionNamespace implements \Reflector
      * @param  array $namespaces PSR-4 declaration from a ClassLoader.
      * @return void
      */
-    protected function fillFromPsr4(array $namespaces): void
+    protected function fillFromPsr4(array $namespaces)
     {
         // Filter namespaces.
         $validNamespaces = preg_grep($this->getSharedNamespaceRegex(), array_keys($namespaces));
@@ -292,9 +285,9 @@ class ReflectionNamespace implements \Reflector
      * @param  array  $missingParts Namespace short name list.
      * @return array
      */
-    protected function getDirectoriesFromPath(string $path, array $missingParts=array()): array
+    protected function getDirectoriesFromPath(string $path, array $missingParts=array())
     {
-        $dirPaths = glob($path.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR, static::GLOB_FLAGS);
+        $dirPaths = glob($path.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR, (GLOB_NOSORT | GLOB_ERR | GLOB_NOESCAPE));
 
         // Errors could be found, or just nothing, returns FALSE.
         if (!$dirPaths) {
@@ -309,7 +302,7 @@ class ReflectionNamespace implements \Reflector
             foreach ($dirPaths as $dirPath) {
                 if ($this->getNameFromFile($this->getDirFromPath($dirPath)) === $part) {
                     $validDirs = array_merge(
-                        count($missingParts) ? $this->getDirectoriesFromPath($dirPath, $missingParts) : [$dirPath],
+                        count($missingParts) ? $this->getDirectoriesFromPath($dirPath, $missingParts) : array($dirPath),
                         $validDirs
                     );
                 }
@@ -328,9 +321,9 @@ class ReflectionNamespace implements \Reflector
      * @param  string $prefix Namespace prefix.
      * @return array
      */
-    protected function getNamespacesFromPath(string $path, string $prefix=NULL): array
+    protected function getNamespacesFromPath(string $path, string $prefix=NULL)
     {
-        $dirPaths = glob($path.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR, static::GLOB_FLAGS);
+        $dirPaths = glob($path.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR, (GLOB_NOSORT | GLOB_ERR | GLOB_NOESCAPE));
 
         if (!$dirPaths) {
             return array();
@@ -347,7 +340,7 @@ class ReflectionNamespace implements \Reflector
      * @param  string $dirPath
      * @return string
      */
-    protected function getDirFromPath(string $dirPath): string
+    protected function getDirFromPath(string $dirPath)
     {
         $dirs = explode(DIRECTORY_SEPARATOR, $dirPath);
 
@@ -361,9 +354,9 @@ class ReflectionNamespace implements \Reflector
      * @param  string $prefix Namespace prefix.
      * @return array
      */
-    protected function getClassesFromPath(string $path, string $prefix=NULL): array
+    protected function getClassesFromPath(string $path, string $prefix=NULL)
     {
-        $files = glob($path.DIRECTORY_SEPARATOR.'*.php', static::GLOB_FLAGS);
+        $files = glob($path.DIRECTORY_SEPARATOR.'*.php', (GLOB_NOSORT | GLOB_ERR | GLOB_NOESCAPE));
 
         if (!$files) {
             return array();
@@ -380,7 +373,7 @@ class ReflectionNamespace implements \Reflector
      * @param  string $filePath
      * @return string
      */
-    protected function getFileFromPath(string $filePath): string
+    protected function getFileFromPath(string $filePath)
     {
         $dirs = explode(DIRECTORY_SEPARATOR, $filePath);
 
@@ -393,9 +386,10 @@ class ReflectionNamespace implements \Reflector
      * @param  string $file
      * @return string
      */
-    protected function getNameFromFile(string $file): string
+    protected function getNameFromFile(string $file)
     {
-        $class = explode('.', $file)[0];
+        $exploded = explode('.', $file);
+        $class = $exploded[0];
 
         $class = str_replace('-', ' ', str_replace('_', ' ', $class));
         $class = ucwords($class);
@@ -410,7 +404,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return boolean
      */
-    protected function prepare(): bool
+    protected function prepare()
     {
         if (!$this->hasCustomLoaders && static::$loaders !== static::getLoaders(TRUE)) {
             $this->prepared = FALSE;
@@ -421,7 +415,7 @@ class ReflectionNamespace implements \Reflector
             $this->namespaces = array();
 
             foreach ($this->getLocalLoaders() as $loader) {
-                if ($loader instanceof ClassLoader) {
+                if ($loader instanceof Composer\Autoload\ClassLoader) {
                     $this->fillWithLoader($loader);
                 }
             }
@@ -441,7 +435,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return void
      */
-    public function reload(): void
+    public function reload()
     {
         $this->prepared = FALSE;
         static::$loaders = NULL;
@@ -454,7 +448,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -464,7 +458,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return string
      */
-    public function getShortName(): string
+    public function getShortName()
     {
         preg_match($this->getShortNameRegex(), $this->getNameForRegex(), $matches);
 
@@ -480,7 +474,11 @@ class ReflectionNamespace implements \Reflector
     {
         preg_match($this->getParentNameRegex(), $this->getName(), $matches);
 
-        return ($matches[1] ?? NULL);
+        if (isset($matches[1])) {
+            return $matches[1];
+        }
+
+        return NULL;
     }
 
     /**
@@ -490,7 +488,11 @@ class ReflectionNamespace implements \Reflector
      */
     public function getParent()
     {
-        return ($this->parent ?? ($this->parent = new static($this->getParentName())));
+        if (is_null($this->parent)) {
+            $this->parent = new static($this->getParentName());
+        }
+
+        return $this->parent;
     }
 
     /**
@@ -498,7 +500,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return string
      */
-    protected function getNameForRegex(): string
+    protected function getNameForRegex()
     {
         return str_replace('\\', static::R_BACKSLASH, $this->getName());
     }
@@ -508,7 +510,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return string
      */
-    protected function getClassRegex(): string
+    protected function getClassRegex()
     {
         return '#^'.$this->getNameForRegex().static::R_BACKSLASH.static::R_NO_BACKSLASH.'$#';
     }
@@ -518,7 +520,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return string
      */
-    protected function getNamespaceRegex(): string
+    protected function getNamespaceRegex()
     {
         $backslashCarac = static::R_BACKSLASH.static::R_NO_BACKSLASH;
 
@@ -531,7 +533,7 @@ class ReflectionNamespace implements \Reflector
      * @param  boolean $strict Must be a sub namespace.
      * @return string
      */
-    protected function getSharedNamespaceRegex(bool $strict=FALSE): string
+    protected function getSharedNamespaceRegex(bool $strict=NULL)
     {
         $names = explode('\\', $this->getName());
         $begin = array_shift($names);
@@ -559,7 +561,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return string
      */
-    protected function getShortNameRegex(): string
+    protected function getShortNameRegex()
     {
         return '#((?!'.static::R_BACKSLASH.').)+$#';
     }
@@ -569,7 +571,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return string
      */
-    protected function getParentNameRegex(): string
+    protected function getParentNameRegex()
     {
         return '#^(.*)'.static::R_BACKSLASH.'#';
     }
@@ -579,7 +581,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return array
      */
-    public function getClassNames(): array
+    public function getClassNames()
     {
         $this->prepare();
 
@@ -591,12 +593,12 @@ class ReflectionNamespace implements \Reflector
      *
      * @return array
      */
-    public function getClasses(): array
+    public function getClasses()
     {
         $this->prepare();
 
         foreach ($this->classes as $className => $classReflection) {
-            if (is_NULL($classReflection)) {
+            if (is_null($classReflection)) {
                 $this->classes[$className] = new \ReflectionClass($this->getName().'\\'.$className);
             }
         }
@@ -610,7 +612,7 @@ class ReflectionNamespace implements \Reflector
      * @param  string $className
      * @return boolean
      */
-    public function hasClass(string $className): bool
+    public function hasClass(string $className)
     {
         return in_array($className, $this->getClassNames());
     }
@@ -621,11 +623,11 @@ class ReflectionNamespace implements \Reflector
      * @param  string $className
      * @return ReflectionClass
      */
-    public function getClass(string $className): ReflectionClass
+    public function getClass(string $className)
     {
         $this->prepare();
 
-        if (is_NULL($this->classes[$className])) {
+        if (is_null($this->classes[$className])) {
             $this->classes[$className] = new \ReflectionClass($this->getName().'\\'.$className);
         }
 
@@ -638,7 +640,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return array
      */
-    public function getDeclaredClasses(): array
+    public function getDeclaredClasses()
     {
         return array_intersect($this->$this->getClassNames(), get_declared_classes());
     }
@@ -648,7 +650,7 @@ class ReflectionNamespace implements \Reflector
      *
      * @return array
      */
-    public function getNamespaceNames(): array
+    public function getNamespaceNames()
     {
         $this->prepare();
 
@@ -660,12 +662,12 @@ class ReflectionNamespace implements \Reflector
      *
      * @return array
      */
-    public function getNamespaces(): array
+    public function getNamespaces()
     {
         $this->prepare();
 
         foreach ($this->namespaces as $namespace => $reflection) {
-            if (is_NULL($reflection)) {
+            if (is_null($reflection)) {
                 $this->namespaces[$namespace] = new static($this->getName().'\\'.$namespace);
             }
         }
@@ -679,11 +681,11 @@ class ReflectionNamespace implements \Reflector
      * @param  string $namespace
      * @return ReflectionNamespace
      */
-    public function getNamespace(string $namespace): ReflectionNamespace
+    public function getNamespace(string $namespace)
     {
         $this->prepare();
 
-        if (is_NULL($this->namespaces[$namespace])) {
+        if (is_null($this->namespaces[$namespace])) {
             $this->namespaces[$namespace] = new static($this->getName().'\\'.$namespace);
         }
 
