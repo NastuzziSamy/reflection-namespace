@@ -625,7 +625,11 @@ class ReflectionNamespace implements \Reflector
     {
         $this->prepare();
 
-        return ($this->classes[$className] ?? ($this->classes[$className] = new \ReflectionClass($this->getName().'\\'.$className)));
+        if (is_null($this->classes[$className])) {
+            $this->classes[$className] = new \ReflectionClass($this->getName().'\\'.$className);
+        }
+
+        return $this->classes[$className];
     }
 
     /**
@@ -679,7 +683,11 @@ class ReflectionNamespace implements \Reflector
     {
         $this->prepare();
 
-        return ($this->namespaces[$namespace] ?? ($this->namespaces[$namespace] = new static($this->getName().'\\'.$namespace)));
+        if (is_null($this->namespaces[$namespace])) {
+            $this->namespaces[$namespace] = new static($this->getName().'\\'.$namespace);
+        }
+
+        return $this->namespaces[$namespace];
     }
 
     /**
