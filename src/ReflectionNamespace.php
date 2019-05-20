@@ -48,9 +48,7 @@ class ReflectionNamespace implements Reflector
      */
     public function __construct(string $name)
     {
-        $names = explode('\\', $name);
-
-        $this->name = implode('\\', $names);
+        $this->name = trim($name, " \t\n\r\0\x0B\\");
     }
 
     /**

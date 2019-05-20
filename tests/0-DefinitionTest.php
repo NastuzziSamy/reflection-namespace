@@ -22,6 +22,54 @@ final class DefinitionTest extends TestCase
         new ReflectionNamespace;
     }
 
+    protected function generateForName(string $namespace)
+    {
+        return [
+            new ReflectionNamespace($namespace),
+            new ReflectionNamespace($namespace.'\\'),
+            new ReflectionNamespace('\\'.$namespace),
+            new ReflectionNamespace('\\'.$namespace.'\\'),
+        ];
+    }
+
+    public function testTrimNamespaces(): void
+    {
+        $reflections = $this->generateForName('App');
+
+        $this->assertEquals(
+            count(array_unique(array_map(function ($reflection) {
+                return $reflection->getName();
+            }, $reflections))),
+            1
+        );
+
+        $this->assertEquals(
+            count(array_unique(array_map(function ($reflection) {
+                return $reflection->getShortName();
+            }, $reflections))),
+            1
+        );
+    }
+
+    public function testTrimSubNamespaces(): void
+    {
+        $reflections = $this->generateForName('App\\Models');
+
+        $this->assertEquals(
+            count(array_unique(array_map(function ($reflection) {
+                return $reflection->getName();
+            }, $reflections))),
+            1
+        );
+
+        $this->assertEquals(
+            count(array_unique(array_map(function ($reflection) {
+                return $reflection->getShortName();
+            }, $reflections))),
+            1
+        );
+    }
+
     /**
      * This test allows to check that the ReflectionNamespace
      * uses all Composer Loaders. As multiple dependencies
