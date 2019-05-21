@@ -168,7 +168,7 @@ class ReflectionNamespace implements Reflector
      * @param array $classes List of classes.
      * @return void
      */
-    protected function fillFromClassMap(array $classes)
+    public function fillFromClassMap(array $classes)
     {
         $this->fillClasses($classes);
         $this->fillNamespaces($classes);
@@ -482,7 +482,7 @@ class ReflectionNamespace implements Reflector
     /**
      * Get the parent reflection of the namespace.
      *
-     * @return self
+     * @return static
      */
     public function getParent()
     {
@@ -583,7 +583,13 @@ class ReflectionNamespace implements Reflector
     {
         $this->prepare();
 
-        return array_keys($this->classes);
+        $classes = [];
+
+        foreach (array_keys($this->classes) as $className) {
+            $classes[$className] = $this->getName().'\\'.$className;
+        }
+
+        return $classes;
     }
 
     /**
@@ -612,7 +618,7 @@ class ReflectionNamespace implements Reflector
      */
     public function hasClass(string $className)
     {
-        return in_array($className, $this->getClassNames());
+        return in_array($className, array_keys($this->getClassNames()));
     }
 
     /**
@@ -640,7 +646,7 @@ class ReflectionNamespace implements Reflector
      */
     public function getDeclaredClasses()
     {
-        return array_intersect($this->$this->getClassNames(), get_declared_classes());
+        return array_intersect(array_values($this->$this->getClassNames()), get_declared_classes());
     }
 
     /**
@@ -652,7 +658,13 @@ class ReflectionNamespace implements Reflector
     {
         $this->prepare();
 
-        return array_keys($this->namespaces);
+        $namespaces = [];
+
+        foreach (array_keys($this->namespaces) as $namespace) {
+            $namespaces[$namespace] = $this->getName().'\\'.$namespace;
+        }
+
+        return $namespaces;
     }
 
     /**
@@ -688,6 +700,17 @@ class ReflectionNamespace implements Reflector
         }
 
         return $this->namespaces[$namespace];
+    }
+
+    /**
+     * Check if a namespace is owned by this namespace.
+     *
+     * @param  string $namespace
+     * @return boolean
+     */
+    public function hasNamespace(string $namespace)
+    {
+        return in_array($namespace, array_keys($this->getNamespace()));
     }
 
     /**

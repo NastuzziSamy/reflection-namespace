@@ -15,13 +15,13 @@ final class CustomTest extends TestCase
         $reflection->getClassNames();
 
         $this->assertEquals([
-                "FakeClass2"
+                'FakeClass2' => 'Custom\\FakeClass2',
             ],
             $reflection->getClassNames()
         );
 
         $this->assertEquals([
-                "FakeNamespace"
+                'FakeNamespace' => 'Custom\\FakeNamespace',
             ],
             $reflection->getNamespaceNames()
         );
@@ -37,7 +37,7 @@ final class CustomTest extends TestCase
         $this->assertEquals(new ReflectionNamespace('Custom'), $reflection->getParent());
 
         $this->assertEquals([
-                "FakeClass1"
+                'FakeClass1' => 'Custom\\FakeNamespace\\FakeClass1',
             ],
             $reflection->getClassNames()
         );

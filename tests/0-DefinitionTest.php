@@ -128,8 +128,8 @@ final class DefinitionTest extends TestCase
 
         // Loaders are not reloaded without a user action
         $this->assertEquals(
-            count($this->getCustomAndSupposedLoaders()),
-            count(ReflectionNamespace::getLoaders()) + 1
+            $loaders,
+            ReflectionNamespace::getLoaders()
         );
 
         $this->assertEquals(
