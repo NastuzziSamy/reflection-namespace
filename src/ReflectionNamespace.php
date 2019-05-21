@@ -583,7 +583,7 @@ class ReflectionNamespace implements Reflector
     {
         $this->prepare();
 
-        $classes = [];
+        $classes = array();
 
         foreach (array_keys($this->classes) as $className) {
             $classes[$className] = $this->getName().'\\'.$className;
@@ -658,7 +658,7 @@ class ReflectionNamespace implements Reflector
     {
         $this->prepare();
 
-        $namespaces = [];
+        $namespaces = array();
 
         foreach (array_keys($this->namespaces) as $namespace) {
             $namespaces[$namespace] = $this->getName().'\\'.$namespace;
