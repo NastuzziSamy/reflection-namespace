@@ -28,5 +28,6 @@ before_script:
 script:
   - php -l src/ReflectionNamespace.php
   - if [ $TEST == '1' ]; then ./vendor/bin/phpcs; fi
+  - if [ $TEST == '1' ]; then ./vendor/bin/phpstan analyse src; fi
   - if [ $TEST == '1' ]; then ./vendor/bin/phpmd src text phpmd.xml; fi
   - if [ $TEST == '1' ]; then composer test; fi

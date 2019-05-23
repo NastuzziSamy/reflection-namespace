@@ -710,7 +710,7 @@ class ReflectionNamespace implements Reflector
      */
     public function hasNamespace(string $namespace)
     {
-        return in_array($namespace, array_keys($this->getNamespace()));
+        return in_array($namespace, array_keys($this->getNamespaces()));
     }
 
     /**
